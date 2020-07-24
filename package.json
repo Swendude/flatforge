@@ -48,6 +48,8 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.10.1",
-    "core-js": "^3.6.5"
+    "core-js": "^3.6.5",
+    "orbit-controls-es6": "^2.0.1",
+    "three": "^0.118.3"
   }
 }
