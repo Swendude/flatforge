@@ -5,12 +5,14 @@ import OrbitControls from 'orbit-controls-es6';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 
 // setup
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth * .9, window.innerHeight * .9);
+const renderer = new THREE.WebGLRenderer({
+  canvas : document.getElementById('mainCanvas')
+});
+renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight);
-camera.position.set(0, 50, 300);
+camera.position.set(0, 0, 300);
 camera.lookAt(0, 0, 0);
 
 let controls = new OrbitControls(camera, renderer.domElement);
@@ -67,7 +69,14 @@ loader.load('public/flatmen_base.svg',
 
 
 
-
+//respond to window resizing
+function resize(){
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+}
+window.addEventListener("resize", resize, false);
+resize();
 
 
 // Update
