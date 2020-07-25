@@ -1,8 +1,11 @@
-# Webpack Frontend Starterkit
+# Flatforge
 
 [![Dependabot badge](https://flat.badgen.net/dependabot/wbkd/webpack-starter?icon=dependabot)](https://dependabot.com/)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/b7b3b054-ccc7-43f5-aa67-e7998a95be97/deploy-status)](https://app.netlify.com/sites/flatforge/deploys)
+### [Click here for a Demo](https://flatforge.netlify.app/)
 
-A lightweight foundation for your next webpack based frontend project.
+A simple experiment to see if flatmini's can be made with Three.js.
+
 
 
 ### Installation
