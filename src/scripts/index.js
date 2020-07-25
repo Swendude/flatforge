@@ -20,7 +20,7 @@ var scene = new THREE.Scene();
 scene.background = new THREE.Color(0x857738);
 scene.fog = new THREE.Fog(scene.background, 1, 5000);
 
-const svgMarkup = '<svg><path d="M15 0 L7 20 L22 20 Z" /></svg>';
+const svgMarkup = '<?xml version="1.0" encoding="UTF-8"?><svg width="148px" height="382px" viewBox="0 0 148 382" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><!-- Generator: Sketch 43.1 (39012) - http://www.bohemiancoding.com/sketch --><title>Slice 1</title><desc>Created with Sketch.</desc><defs></defs><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><path d="M75.4726562,319.835938 C75.4726562,319.835938 75.3085937,237.785156 26.8945312,208.582031 C-21.5195312,179.378906 11.540977,99.4538322 21.9375,87.8554688 C29.6650665,79.2345938 27.5640498,50.2153483 41.6367187,35.3320312 C55.7093877,20.4487142 103.734375,1.12109375 103.734375,1.12109375 C103.734375,1.12109375 76.0654086,68.8459222 75.4726563,102.683594 C75.2923169,112.978388 143.772882,147.919706 146.632813,179.378906 C149.492743,210.838106 97.7617188,342.074219 97.7617188,342.074219 L56.3789063,379.714844 L75.4726562,319.835938 Z" id="Path" stroke="#979797"></path></g></svg>';
 const loader = new SVGLoader();
 const svgData = loader.parse(svgMarkup);
 var material = new THREE.MeshPhongMaterial({ color: 0x999999 });
@@ -61,11 +61,11 @@ scene.add(svgGroup);
 // var geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
 // var mesh = new THREE.Mesh(geometry, material);
 
-// var light = new THREE.DirectionalLight(0xffffff, 1);
-// light.position.set(-1, 2, 4);
+var light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(-1, 2, 4);
 
 
-// scene.add(light);
+scene.add(light);
 // scene.add(mesh);
 
 function render(time) {
