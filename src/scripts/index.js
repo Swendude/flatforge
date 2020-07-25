@@ -4,18 +4,30 @@ import * as THREE from 'three';
 import OrbitControls from 'orbit-controls-es6';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 
+// CONFIG
+
+let config = {
+    defaultCameraPosition: [0, 0, 500],
+    colors: {
+        white: new THREE.Color(0xf8f8ff),
+        blue: new THREE.Color(0x7575FF),
+        black : new THREE.Color(0x000000),
+        lblue: new THREE.Color(0xDBF1FF )
+    }
+};
+
 // SETUP
 
 // Create renderer and scale to window
 const renderer = new THREE.WebGLRenderer({
     canvas: document.getElementById('mainCanvas'),
-
+    antialias: true
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 // Create a camera and point it towards the object
 let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight);
-camera.position.set(0, 0, 500);
+camera.position.set(...config.defaultCameraPosition);
 
 // Add orbit controls
 let controls = new OrbitControls(camera, renderer.domElement);
@@ -30,13 +42,17 @@ const light2 = new THREE.DirectionalLight(0xffffff, 1);
 light1.position.set(2, 1, 4);
 scene.add(light1, light2);
 
-// Show the axes
-var axesHelper = new THREE.AxesHelper(camera.far);
-scene.add(axesHelper);
 
 // Add a skybox
-var texture = new THREE.TextureLoader().load("public/space.jpg");
-scene.background = texture;
+scene.background = config.colors.white;
+
+// Add a grid
+const tenUnitsGrid = new THREE.GridHelper(400, 40, config.colors.lblue, config.colors.lblue);
+tenUnitsGrid.rotateX(toRad(90));
+scene.add(tenUnitsGrid);
+const hunderdUnitsGrid = new THREE.GridHelper(400, 4, config.colors.blue, config.colors.blue);
+hunderdUnitsGrid.rotateX(toRad(90));
+scene.add(hunderdUnitsGrid);
 
 // Convert degrees to radians
 function toRad(deg) {
@@ -58,10 +74,11 @@ loader.load('public/flatmen_base.svg',
 
                 // Finally we can take each shape and extrude it
                 const geometry = new THREE.ExtrudeGeometry(shape, {
-                    depth: 20,
+                    depth: 10,
                     bevelEnabled: false
                 });
                 geometry.center();
+                geometry.translate(0, 0, 5);
                 geometry.rotateZ(toRad(180));
                 // Create a mesh and add it to the group
                 const mesh = new THREE.Mesh(geometry, material);
@@ -97,5 +114,5 @@ resize();
 
 // handle reset view
 document.getElementById('resetBtn').addEventListener('click', () => {
-    camera.position.set(0, 0, 300);
+    camera.position.set(...config.defaultCameraPosition);
 });
