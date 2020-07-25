@@ -10,12 +10,18 @@ body {
   padding: 12px;
   top: 40px;
   left: 23px;
-  width: 20%;
-  height: 60%;
+  width: 400px;
   text-align: left;
   z-index: 100;
   display: block;
   background-color: #123121ee;
   border-radius: 10px;
-  border:1px solid #ffffffee;
+  border: 1px solid #ffffffee;
+}
+
+#flatDesign {
+  width: 400px;
+  height: 400px;
+  border-radius: 10px;
+  border: 1px solid #000000;
 }

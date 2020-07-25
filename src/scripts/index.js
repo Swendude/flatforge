@@ -3,6 +3,7 @@ import '../styles/index.scss';
 import * as THREE from 'three';
 import OrbitControls from 'orbit-controls-es6';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
+import { SVG } from '@svgdotjs/svg.js';
 
 // CONFIG
 
@@ -11,9 +12,10 @@ let config = {
     colors: {
         white: new THREE.Color(0xf8f8ff),
         blue: new THREE.Color(0x7575FF),
-        black : new THREE.Color(0x000000),
-        lblue: new THREE.Color(0xDBF1FF )
-    }
+        black: new THREE.Color(0x000000),
+        lblue: new THREE.Color(0xDBF1FF)
+    },
+    flatDesign: SVG('#flatDesign')
 };
 
 // SETUP
@@ -42,6 +44,9 @@ const light2 = new THREE.DirectionalLight(0xffffff, 1);
 light1.position.set(2, 1, 4);
 scene.add(light1, light2);
 
+// Axes helpers
+var axesHelper = new THREE.AxesHelper(camera.far);
+scene.add(axesHelper);
 
 // Add a skybox
 scene.background = config.colors.white;
@@ -63,38 +68,44 @@ function toRad(deg) {
 const loader = new SVGLoader();
 loader.load('public/flatmen_base.svg',
     function (svgData) {
-        console.log("LOADED");
-        const material = new THREE.MeshPhongMaterial({ color: 0xe0e0e0 });
+        var groupsgroup = new THREE.Group();
+        var material = new THREE.MeshPhongMaterial({ color: 0xe0e0e0 });
 
         svgData.paths.forEach((path, i) => {
-            const shapes = path.toShapes(true);
-            console.log(shapes);
+            config.flatDesign.svg(path.userData.node.outerHTML);
+            var shapes = path.toShapes(true);
+            var group = new THREE.Group();
+
             // Each path has array of shapes
             shapes.forEach((shape, j) => {
-
+                console.dir(shape);
                 // Finally we can take each shape and extrude it
-                const geometry = new THREE.ExtrudeGeometry(shape, {
-                    depth: 10,
+                var geometry = new THREE.ExtrudeGeometry(shape, {
+                    depth: i + 10,
                     bevelEnabled: false
                 });
-                geometry.center();
-                geometry.translate(0, 0, 5);
-                geometry.rotateZ(toRad(180));
+                // geometry.center();
+                geometry.center()
+                geometry.translate(0, 0, 5 + i);
+                // geometry.rotateZ(toRad(180));
+
                 // Create a mesh and add it to the group
-                const mesh = new THREE.Mesh(geometry, material);
-                scene.add(mesh);
+                var mesh = new THREE.Mesh(geometry, material);
+                mesh.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1));
+                group.add(mesh);
             });
+            groupsgroup.add(group);
         });
+        scene.add(groupsgroup);
     },
-    function (xhr) { console.log((xhr.loaded / xhr.total * 100) + '% loaded'); },
-    function (error) { console.log("Error!"); });
+    function (xhr) { },
+    function (error) { console.log(error); });
 
 
 // UPDATE
 function render(time) {
     time *= 0.001;  // convert time to seconds
     controls.update();
-
     renderer.render(scene, camera);
 
     requestAnimationFrame(render);
