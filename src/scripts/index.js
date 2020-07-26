@@ -15,7 +15,8 @@ let config = {
         black: new THREE.Color(0x000000),
         lblue: new THREE.Color(0xDBF1FF)
     },
-    flatDesign: SVG('#flatDesign')
+    flatDesign: SVG('#flatDesign'),
+    sunPosition: 0
 };
 
 // SETUP
@@ -38,11 +39,11 @@ let controls = new OrbitControls(camera, renderer.domElement);
 let scene = new THREE.Scene();
 
 // Create some nice lights
-const light1 = new THREE.DirectionalLight(0xffffff, 1);
-light1.position.set(-1, 2, 4);
-const light2 = new THREE.DirectionalLight(0xffffff, 1);
-light1.position.set(2, 1, 4);
-scene.add(light1, light2);
+const sun = new THREE.DirectionalLight(0xf2f2f0, 0.85);
+sun.position.set(0, 80, 0);
+const light = new THREE.DirectionalLight(0xf7f6e4, 0.35);
+light.position.set(30, 80, 300);
+scene.add(sun, light);
 
 // Axes helpers
 var axesHelper = new THREE.AxesHelper(camera.far);
@@ -69,7 +70,7 @@ const loader = new SVGLoader();
 loader.load('public/flatmen_base.svg',
     function (svgData) {
         var groupsgroup = new THREE.Group();
-        var material = new THREE.MeshPhongMaterial({ color: 0xe0e0e0 });
+        var material = new THREE.MeshStandardMaterial({ color: 0xe0e0e0 });
 
         svgData.paths.forEach((path, i) => {
             config.flatDesign.svg(path.userData.node.outerHTML);
@@ -81,12 +82,12 @@ loader.load('public/flatmen_base.svg',
                 console.dir(shape);
                 // Finally we can take each shape and extrude it
                 var geometry = new THREE.ExtrudeGeometry(shape, {
-                    depth: i + 10,
+                    depth: 10,
                     bevelEnabled: false
                 });
                 // geometry.center();
-                geometry.center()
-                geometry.translate(0, 0, 5 + i);
+                geometry.center();
+                geometry.translate(0, 0, 5);
                 // geometry.rotateZ(toRad(180));
 
                 // Create a mesh and add it to the group
@@ -107,7 +108,10 @@ function render(time) {
     time *= 0.001;  // convert time to seconds
     controls.update();
     renderer.render(scene, camera);
-
+    
+    sun.position.x = 100 * Math.sin(config.sunPosition);
+    sun.position.z = 100 * Math.cos(config.sunPosition);
+    
     requestAnimationFrame(render);
 }
 requestAnimationFrame(render);
@@ -126,4 +130,8 @@ resize();
 // handle reset view
 document.getElementById('resetBtn').addEventListener('click', () => {
     camera.position.set(...config.defaultCameraPosition);
+});
+
+document.getElementById('sunPosition').addEventListener('input', (value) => {
+    config.sunPosition = toRad(value.srcElement.value);
 });
