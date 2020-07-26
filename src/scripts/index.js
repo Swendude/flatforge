@@ -88,6 +88,7 @@ loader.load('public/flatmen_base.svg',
                 // geometry.center();
                 geometry.center();
                 geometry.translate(0, 0, 5);
+
                 // geometry.rotateZ(toRad(180));
 
                 // Create a mesh and add it to the group
