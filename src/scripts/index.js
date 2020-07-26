@@ -85,20 +85,29 @@ const loader = new THREE.FileLoader();
 const svgLoader = new SVGLoader();
 loader.load('public/flatmen_base.svg',
     function (svgData) {
-        let groupsgroup = new THREE.Group();
         let material = new THREE.MeshPhongMaterial({ color: 0xe0e0e0 });
-        let svgJson;
         SVGSon.parse(svgData).then(function (svgJson) {
             let paths = [];
             svgJson = svgJson;
             paths = findPaths(svgJson);
-            paths.forEach((path, i) => {
-                parsePathNode(path.attributes.d);
+            paths.forEach((pathJson, i) => {
+                let pathShape = parsePathNode(pathJson.attributes.d);
+                pathShape.toShapes().forEach((shape, j) => {
+                    let geometry = new THREE.ExtrudeGeometry(shape, {
+                    depth: 10,
+                    bevelEnabled: false
+                    });
+                    geometry.center();
+                    geometry.translate(0, 0, 10 * i);
+                    let mesh = new THREE.Mesh(geometry, material);
+                    mesh.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1));
+                    scene.add(mesh);
+                });
             });
         }, function () {
             console.log("Error in svg!");
         });
-        
+
         // svgData.paths.forEach((path, i) => {
         //     config.flatDesign.svg(path.userData.node.outerHTML);
         //     let shapes = path.toShapes(true);
