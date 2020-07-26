@@ -85,7 +85,7 @@ loader.load('public/flatmen_base.svg',
                     bevelEnabled: false
                 });
                 // geometry.center();
-                geometry.center()
+                geometry.center();
                 geometry.translate(0, 0, 5 + i);
                 // geometry.rotateZ(toRad(180));
 
