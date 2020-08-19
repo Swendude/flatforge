@@ -49,8 +49,9 @@
   "dependencies": {
     "@babel/polyfill": "^7.10.1",
     "@svgdotjs/svg.js": "^3.0.16",
-    "core-js": "^3.6.5",
+    "three": "^0.118.3",
     "orbit-controls-es6": "^2.0.1",
-    "three": "^0.118.3"
+    "core-js": "^3.6.5",
+    "svgson": "^4.1.0"
   }
 }

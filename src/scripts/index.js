@@ -4,6 +4,8 @@ import * as THREE from 'three';
 import OrbitControls from 'orbit-controls-es6';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import { SVG } from '@svgdotjs/svg.js';
+import * as SVGSon from 'svgson';
+import { parsePathNode } from './parse.js';
 
 // CONFIG
 
@@ -65,8 +67,23 @@ function toRad(deg) {
     return deg * (Math.PI / 180);
 }
 
+function findPaths(svgJson) {
+    let paths = [];
+    for (const i in svgJson.children) {
+        let child = svgJson.children[i];
+        if (child.name == 'path') {
+            paths.push(svgJson.children[i]);
+        }
+        if (child.children) {
+            paths = paths.concat(findPaths(child));
+        }
+    }
+    return paths;
+};
+
 // SVG parsing and extruding
-const loader = new SVGLoader();
+const loader = new THREE.FileLoader();
+const svgLoader = new SVGLoader();
 loader.load('public/flatmen_base.svg',
     function (svgData) {
         var groupsgroup = new THREE.Group();
@@ -82,9 +99,17 @@ loader.load('public/flatmen_base.svg',
                 console.dir(shape);
                 // Finally we can take each shape and extrude it
                 var geometry = new THREE.ExtrudeGeometry(shape, {
+
                     depth: 10,
                     bevelEnabled: false
+                    });
+                    geometry.center();
+                    geometry.translate(0, 0, 10 * i);
+                    let mesh = new THREE.Mesh(geometry, material);
+                    mesh.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1));
+                    scene.add(mesh);
                 });
+
                 // geometry.center();
                 geometry.center();
                 geometry.translate(0, 0, 5);
@@ -95,10 +120,35 @@ loader.load('public/flatmen_base.svg',
                 var mesh = new THREE.Mesh(geometry, material);
                 mesh.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1));
                 group.add(mesh);
+
             });
-            groupsgroup.add(group);
+        }, function () {
+            console.log("Error in svg!");
         });
-        scene.add(groupsgroup);
+
+        // svgData.paths.forEach((path, i) => {
+        //     config.flatDesign.svg(path.userData.node.outerHTML);
+        //     let shapes = path.toShapes(true);
+        //     let group = new THREE.Group();
+
+        //     // Each path has array of shapes
+        //     shapes.forEach((shape, j) => {
+        //         // Finally we can take each shape and extrude it
+        //         let geometry = new THREE.ExtrudeGeometry(shape, {
+        //             depth: i + 10,
+        //             bevelEnabled: false
+        //         });
+        //         geometry.center();
+        //         geometry.translate(0, 0, 5 + i);
+
+        //         // Create a mesh and add it to the group
+        //         let mesh = new THREE.Mesh(geometry, material);
+        //         mesh.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1));
+        //         group.add(mesh);
+        //     });
+        //     groupsgroup.add(group);
+        // });
+        // scene.add(groupsgroup);
     },
     function (xhr) { },
     function (error) { console.log(error); });
