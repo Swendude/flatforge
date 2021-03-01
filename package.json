@@ -51,6 +51,6 @@
     "@svgdotjs/svg.js": "^3.0.16",
     "core-js": "^3.6.5",
     "orbit-controls-es6": "^2.0.1",
-    "three": "^0.118.3"
+    "three": "^0.125.0"
   }
 }
