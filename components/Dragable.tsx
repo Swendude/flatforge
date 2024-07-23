@@ -1,5 +1,23 @@
 "use client";
 import { useState, MouseEvent as ReactMouseEvent, ReactNode } from "react";
+import Centered from "./Centered";
+
+const MovePath = () => (
+  <g
+    className="fill-none stroke-foreground"
+    strokeWidth="1"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    transform="scale(0.4) translate(-12 -12) "
+  >
+    <polyline points="5 9 2 12 5 15" />
+    <polyline points="9 5 12 2 15 5" />
+    <polyline points="15 19 12 22 9 19" />
+    <polyline points="19 9 22 12 19 15" />
+    <line x1="2" x2="22" y1="12" y2="12" />
+    <line x1="12" x2="12" y1="2" y2="22" />
+  </g>
+);
 
 const Dragable = ({
   children,
@@ -60,17 +78,16 @@ const Dragable = ({
   return (
     <g
       transform={`translate(${position.x} ${position.y}) scale(${scale})`}
-      cx={position.x}
-      cy={position.y}
-      r={30}
-      className="stroke-white stroke-1 hover:stroke-[3]"
-      fill="white"
-      fillOpacity={position.dragging ? 0.6 : 0.6}
+      className="group fill-background hover:fill-accent"
       onPointerDown={dragStart}
       onPointerUp={dragEnd}
       onPointerMove={dragging}
     >
       {children}
+
+      <g className="invisible fill-foreground group-hover:visible">
+        <MovePath />
+      </g>
     </g>
   );
 };

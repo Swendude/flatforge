@@ -1,4 +1,13 @@
-const Grid = ({ size, step }: { size: number; step: number }) => {
+import { useCanvasContext } from "./CanvasContext";
+
+const Grid = ({ className }: { className?: string }) => {
+  const {
+    state: { size, gridCountI, gridCounts },
+    dispatch,
+  } = useCanvasContext();
+
+  const step = size / gridCounts[gridCountI]!;
+
   const lines = (
     from: number,
     to: number,
@@ -28,22 +37,8 @@ const Grid = ({ size, step }: { size: number; step: number }) => {
     <g>
       {lines(-size * 0.5, size * 0.5, step)}
       {lines(-size * 0.5, size * 0.5, step, true)}
-      {lines(
-        -size * 0.5,
-        size * 0.5,
-        size * 0.5,
-        false,
-        0.3,
-        "stroke-background",
-      )}
-      {lines(
-        -size * 0.5,
-        size * 0.5,
-        size * 0.5,
-        true,
-        0.3,
-        "stroke-background",
-      )}
+      {lines(-size * 0.5, size * 0.5, size * 0.5, false, 0.3, className)}
+      {lines(-size * 0.5, size * 0.5, size * 0.5, true, 0.3, className)}
     </g>
   );
 };
