@@ -1,15 +1,11 @@
 "use client";
 import { useState, MouseEvent as ReactMouseEvent, ReactNode } from "react";
 import Centered from "./Centered";
+import { useShapeContext } from "./Shape";
+import { useCanvasContext } from "./CanvasContext";
 
 const MovePath = () => (
-  <g
-    className="fill-none stroke-foreground"
-    strokeWidth="1"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    transform="scale(0.4) translate(-12 -12) "
-  >
+  <g transform="translate(-12 -12) ">
     <polyline points="5 9 2 12 5 15" />
     <polyline points="9 5 12 2 15 5" />
     <polyline points="15 19 12 22 9 19" />
@@ -19,30 +15,20 @@ const MovePath = () => (
   </g>
 );
 
-const Dragable = ({
-  children,
-  rounding = 20,
-  x = 0,
-  y = 0,
-  scale = 1,
-}: {
-  children: ReactNode;
-  rounding?: number;
-  x?: number;
-  y?: number;
-  scale?: number;
-}) => {
+const Dragable = ({ children }: { children: ReactNode }) => {
+  const {
+    state: { gridCountI, gridCounts, size },
+  } = useCanvasContext();
+  const { state, dispatch } = useShapeContext();
   const [position, setPosition] = useState<{
-    x: number;
-    y: number;
     dragging: boolean;
     offset: { x: number; y: number };
   }>({
-    x: x,
-    y: y,
     dragging: false,
     offset: { x: 0, y: 0 },
   });
+
+  const rounding = size / gridCounts[gridCountI]!;
 
   const dragStart = (event: React.PointerEvent<SVGElement>) => {
     event.preventDefault();
@@ -60,11 +46,13 @@ const Dragable = ({
     const bbox = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - bbox.left;
     const y = event.clientY - bbox.top;
-    setPosition((p) => ({
-      ...p,
-      x: round(position.x - (position.offset.x - x)),
-      y: round(position.y - (position.offset.y - y)),
-    }));
+    dispatch({
+      type: "Position_set",
+      payload: {
+        x: round(state.position.x - (position.offset.x - x)),
+        y: round(state.position.y - (position.offset.y - y)),
+      },
+    });
   };
 
   const dragEnd = () => {
@@ -77,15 +65,15 @@ const Dragable = ({
 
   return (
     <g
-      transform={`translate(${position.x} ${position.y}) scale(${scale})`}
-      className="group fill-background hover:fill-accent"
+      transform={`translate(${state.position.x} ${state.position.y})`}
       onPointerDown={dragStart}
       onPointerUp={dragEnd}
       onPointerMove={dragging}
+      className="group"
     >
       {children}
 
-      <g className="invisible fill-foreground group-hover:visible">
+      <g className="pointer-events-none invisible scale-75 fill-muted-foreground stroke-muted-foreground group-hover:visible">
         <MovePath />
       </g>
     </g>
