@@ -98,7 +98,7 @@ const Render = ({ centered = true }: { centered?: boolean }) => {
       <g
         id="centering"
         transform={`translate(${-(left + 0.5 * w)} ${-(top + 0.5 * h)})`}
-        className="fill-muted-foreground stroke-background opacity-80  group-hover:stroke-2"
+        className="fill-muted stroke-background opacity-80  group-hover:stroke-2"
       >
         {boundingBoxes && (
           <rect
